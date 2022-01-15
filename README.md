@@ -1,5 +1,5 @@
 # QR-code Application
-**Android application for generating and scanning QR-codes **  
+**Android application for generating and scanning QR-codes**  
   
 ***Features:***
 * Create qr code from text or link  
