@@ -1,5 +1,5 @@
 # QR-code Application
-**Desktop application for recognizing faces in images (or in an image stream)**  
+**Android application for generating and scanning QR-codes **  
   
 ***Features:***
 * Create qr code from text or link  
