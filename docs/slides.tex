@@ -1,0 +1,207 @@
+\documentclass[10pt]{beamer}
+\usepackage[T1,T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\hypersetup{unicode=true}
+\usepackage{fontawesome}
+\usepackage{graphicx}
+\usepackage[english,russian]{babel}
+
+\usepackage[T1]{fontenc}
+\usepackage{fontawesome}
+\usepackage{PTSans} 
+\mode<presentation>
+{
+  \usetheme[progressbar=foot,numbering=fraction,background=light]{metropolis} 
+  \usecolortheme{default}
+  \usefonttheme{default}
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+} 
+
+\let\textttorig\texttt
+\renewcommand<>{\texttt}[1]{%
+  \only#2{\textttorig{#1}}%
+}
+
+\usepackage{minted}
+
+\usepackage{xcolor}
+\definecolor{codecolor}{HTML}{FFC300}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{most,listingsutf8,minted}
+
+\tcbset{tcbox width=auto,left=1mm,top=1mm,bottom=1mm,
+right=1mm,boxsep=1mm,middle=1pt}
+
+\newtcblisting{myr}[1]{colback=codecolor!5,colframe=codecolor!80!black,listing only, 
+minted options={numbers=left, style=tcblatex,fontsize=\tiny,breaklines,autogobble,linenos,numbersep=3mm},
+left=5mm,enhanced,
+title=#1, fonttitle=\bfseries,
+listing engine=minted,minted language=r}
+
+\definecolor{mygreen}{HTML}{37980D}
+\definecolor{myblue}{HTML}{0D089F}
+\definecolor{myred}{HTML}{98290D}
+
+\usepackage{listings}
+
+\lstdefinelanguage{XML}
+{
+  morestring=[b]",
+  morecomment=[s]{<!--}{-->},
+  morestring=[s]{>}{<},
+  morekeywords={ref,xmlns,version,type,canonicalRef,metr,real,target}
+}
+
+\lstdefinestyle{myxml}{
+language=XML,
+showspaces=false,
+showtabs=false,
+basicstyle=\ttfamily,
+columns=fullflexible,
+breaklines=true,
+showstringspaces=false,
+breakatwhitespace=true,
+escapeinside={(*@}{@*)},
+basicstyle=\color{mygreen}\ttfamily,
+stringstyle=\color{myred},
+commentstyle=\color{myblue}\upshape,
+keywordstyle=\color{myblue}\bfseries,
+}
+
+
+% ------------------------------------------------------------------------------
+% The Document
+% ------------------------------------------------------------------------------
+\title{Разработка приложения для генерации и сканирования QR-кодов}
+\subtitle{Отчет о проектной работе по курсу <<Разработка приложений для мобильных операционных систем>>}
+\author{Е. Ф. Волкова, К. А. Смирнов, Е. Д. Топчий}
+\date{17 января 2022}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Введение}
+Большинство современных смартфонов может считывать коды с помощью наведения камеры, устройство распознает изображение и выдает результат. Специалисты предрекают большое будущее этой системе контроля и предоставления информации, поскольку она сегодня одобрена на государственном уровне и используется в борьбе с пандемией вируса. В скором времени сканеры станут привычными и повсеместными средствами способными предоставить всю необходимую информацию. В данном проекте речь пойдет о создании функционала для работы с QR-кодами.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Цель и задачи проекта}
+    \begin{block}{Цель проекта:}
+        разработать приложение для сканирования и генерации QR-кодов  на языке Kotlin в среде разработке Android Studio.
+  \end{block}
+  \begin{block}{Задачи проекта:}
+  \begin{itemize}
+    \item изучить вариации реализации приложения и на их примере разработать требования к собственному приложению.
+    \item разработать графический интерфейс пользователя.
+    \item реализовать приложение с использованием разработанных модулей и необходимых библиотек на языке программирования Kotlin.
+    \item получить навыки по составлению документации, описывающей работу программы;
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{План разработки игры}
+    \begin{enumerate}
+         \item Разработка модуля, отвечающего за генерацию QR-кода.
+         \item Разработка модуля, отвечающего за сканирование QR-кода.
+         \item Разработка модуля, реализующего вывод информации о QR-коде.
+         \item Разработка модуля, отвечающего за разрешение камеры.
+         \item Разработка модуля, отвечающего за диалоговые окна.
+         \item Разработка модуля пользовательского интерфейса.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{MainActivity}
+        \begin{columns}[T,onlytextwidth]
+                \begin{column}{0.44\textwidth}
+                        \begin{itemize}
+                                \item Отображение стартового окна с настройками и кнопками запуска сканирования и генерации соотвественно.
+                                \item Модуль, отвечающий за генерацию QR-кода (возможен ввод как текста, так и ссылки) и за вывод его пользователю.
+                                \item Реализация анимации градиента для фона.
+                        \end{itemize}
+                \end{column}
+                \begin{column}{0.3\textwidth}
+                        \includegraphics[width=\textwidth]{2.jpg}
+                \end{column}
+        \end{columns}
+\end{frame}
+
+\begin{frame}{ScannerActivity}
+    Запуск при нажатии кнопки считывания QR-кода в стартовом окне приложения, отображание превью камеры и определение QR-кода на нем.\\ 
+    \\
+        При сканировании QR-кода пользователем появится диалоговое окно,
+        на котором будет отображена ссылка или текст, зашифрованные в данном QR-коде,
+        а так будет предложено 3 действия:\\
+    \begin{itemize}
+        \item Перейти по ссылке(в случае, если в QR-коде заложен обычный текст,
+        перейдет по ссылке в Google поиск с запросом в виде данного текста)\\
+        \item Скопировать ссылку или текст - копирует либо ссылку, либо текст.\\
+        \item Назад - возвращает пользователя в главное меню приложения
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{ScannerActivity}
+\begin{figure}[h]
+\begin{center}
+\begin{minipage}[h]{0.28\linewidth}
+\includegraphics[width=1\linewidth]{4.jpg}
+\caption{Окно для сканирования} %% подпись к рисунку
+\label{ris:experimoriginal} %% метка рисунка для ссылки на него
+\end{minipage}
+\hfill
+\begin{minipage}[h]{0.28\linewidth}
+\includegraphics[width=1\linewidth]{5.jpg}
+\caption{Диалоговое окно}
+\label{ris:experimcoded}
+\end{minipage}
+\end{center}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Другие модули}
+    \begin{columns}[T,onlytextwidth]
+                \begin{column}{0.44\textwidth}
+                        \begin{itemize}
+                                \item Также были задействованы другие модули для разрешения доступа на использование камеры и подключения библиотек.
+                                \item При первом запуске приложения будет появляться диалоговое окно с разрешением доступа к камере.
+                                \item Возможны три действия: разрешение, отклонение или запрет навсегда.
+                        \end{itemize}
+                \end{column}
+                \begin{column}{0.3\textwidth}
+                        \includegraphics[width=\textwidth]{3.jpg}
+                \end{column}
+        \end{columns}
+\end{frame}
+
+\begin{frame}{Реализация приложения}
+        \begin{columns}[T,onlytextwidth]
+                \begin{column}{0.44\textwidth}
+                        \begin{itemize}
+                                \item Так, нами был разработан функционал для генерации и сканирования QR-кодов - приложение, с помощью которого можно считывать информацию одним наведением цифровой видеокамеры. 
+                                \item Для этого был использован язык Kotlin и среда разработки Android studio.
+                        \end{itemize}
+                \end{column}
+                \begin{column}{0.3\textwidth}
+                        \includegraphics[width=\textwidth]{1.jpg}
+                \end{column}
+        \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Заключение}
+    Реализация программы способствовало закреплению теоретического материала на практике. Также возможны изменения и добавления некоторых функциональных частей, которые можно реализовать в дальнейшем.
+\end{frame}
+
+\begin{frame}[standout]
+    \begin{figure}[h]
+   \centering
+   \includegraphics[width=1\textwidth]{Снимок.JPG}
+   \caption{\label{fig:trans-vs-reactive}}
+\end{figure}
+\end{frame}
+
+\end{document}
